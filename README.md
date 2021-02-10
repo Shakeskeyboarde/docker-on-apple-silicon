@@ -53,9 +53,10 @@ This script will...
 2. Install your public key on the remote, so that you don't need to enter a password repeatedly.
 3. Install the Docker daemon on the remote.
 4. Create a local Docker context called `remote`.
-   - You can add `export DOCKER_CONTEXT=remote` to your `.zshrc` and/or `.bashrc` file to make it the default context.
 
-You can run this script again at any time to upgrade or re-provision the Docker daemon, or to generate new certs.
+You can add `export DOCKER_CONTEXT=remote` to your `.zshrc` and/or `.bashrc` file to make it the default context. Or select it every time using the `--context` option.
+
+You can run this script again at any time to upgrade or re-provision the Docker daemon.
 
 ## Step 4: Profit.
 
