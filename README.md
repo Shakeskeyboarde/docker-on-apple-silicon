@@ -23,10 +23,10 @@ I highly recommend creating a [Kamatera](https://kamatera.com) Type A (availabil
 Run the [setup-local-docker-client.sh](setup-local-docker-client.sh) script by pasting the following command in a terminal.
 
 ```bash
-bash <(curl -sL https://raw.githubusercontent.com/Shakeskeyboarde/docker-remote/main/setup-local-docker-client.sh)
+curl -sL https://raw.githubusercontent.com/Shakeskeyboarde/docker-remote/main/setup-local-docker-client.sh | bash -s
 ```
 
-This script will download a tarball of the latest stable Docker client, and extract the `docker` binary to your `/usr/local/bin` directory. This will _NOT_ install the Docker daemon locally.
+This script will download a tarball of the latest stable Docker client, and extract the `docker` binary to your `/usr/local/bin` directory. This will _NOT_ install the Docker daemon locally. You can run this script again at anytime to upgrade or re-install the Docker client.
 
 When it's done, you should be able to run the following command:
 
@@ -51,6 +51,8 @@ This script will...
 5. Download the client TLS certs to your local `~/.docker` directory.
 6. Print out an export string which configures the Docker client to connect to the remote Docker daemon.
    - Example: `export DOCKER_TLS_VERIFY=1 DOCKER_HOST=tcp://1.2.3.4:2376`
+
+You can run this script again at any time to upgrade or re-provision the Docker daemon, or to generate new certs.
 
 ## Step 4: Profit.
 
