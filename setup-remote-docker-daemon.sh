@@ -1,29 +1,24 @@
 #!/usr/bin/env bash
 set -e
 
-__IP__=$1
+__SSH_ENDPOINT__=$1
 
-if [ -z "$__IP__" ]; then
+if [ -z "$__SSH_ENDPOINT__" ]; then
   echo $(tput bold)$(tput setaf 4)
-  echo "Enter the IP address of an Ubuntu instance where the"
-  echo "remote Docker daemon should be provisioned."
+  echo "Enter the SSH endpoint (eg. root@1.2.3.4) of an Ubuntu"
+  echo "instance where the remote Docker daemon should be"
+  echo "provisioned."
   echo $(tput sgr0)
-  read -p "$(tput setaf 3)IP Address? $(tput sgr0)" __IP__
+  read -p "$(tput setaf 3)SSH Endpoint? $(tput sgr0)" __SSH_ENDPOINT__
 fi
 
-
 echo $(tput bold)$(tput setaf 4)
-echo "The Docker daemon will be provisioned over SSH as the"
-echo "root user."
-echo
-echo "$(tput smul)Other changes that will be made:$(tput rmul)"
-echo
+echo "The Docker daemon will be provisioned over SSH."
+echo $(tput smul)
+echo "Other changes that will be made:"
+echo $(tput rmul)
 echo "- Your public key will be added to the remote host's"
 echo "  authorized_keys file."
-echo
-echo "- The self-signed client certificates required for TLS"
-echo "  connections to the daemon, will be copied to your"
-echo "  local ~/.docker directory."
 echo $(tput sgr0)
 
 read -p "$(tput setaf 3)Continue [yN]? $(tput sgr0)" -n 1 -r
@@ -42,17 +37,11 @@ function die() {
 
 echo "Setting up public key authentication"
 cat /dev/zero | ssh-keygen -t rsa -q -N "" &>/dev/null || true
-ssh-copy-id -i "root@$__IP__"
+ssh-copy-id -i "$__SSH_ENDPOINT__"
 
-echo "Configuring remote Docker daemon"
-__VARS__=$(cat <<__VARS__
-  __IP__=$__IP__
-__VARS__
-)
-__SCRIPT__=$(cat <<'__SCRIPT__'
+echo "Provisioning remote Docker daemon"
+ssh -qtt "$__SSH_ENDPOINT__" <<'REMOTE'
   set -e
-  HOST=$(hostname)
-  __PASSPHRASE__=$(openssl rand -base64 32)
 
   # Installing Docker daemon
   DEBIAN_FRONTEND=noninteractive
@@ -71,86 +60,26 @@ __SCRIPT__=$(cat <<'__SCRIPT__'
     stable"
   apt-get update
   apt-get install docker-ce docker-ce-cli containerd.io
-
-  mkdir -p /etc/docker/ssl
-  cd /etc/docker/ssl
-
-  # Generating self-signing CA
-  openssl genrsa -aes256 -out ca-key.pem -passout pass:"$__PASSPHRASE__" 4096
-  openssl req -new -x509 -days 365 -key ca-key.pem -sha256 -out ca.pem \
-    -passin pass:"$__PASSPHRASE__" \
-    -subj "/C=US/ST=Washington/L=Seattle/O=None/OU=None/CN=$HOST"
-
-  # Generating server key and CSR
-  openssl genrsa -out server-key.pem 4096
-  openssl req -subj "/CN=$HOST" -sha256 -new -key server-key.pem -out server.csr
-
-  # Signing server cert
-  echo subjectAltName = DNS:$HOST,IP:$__IP__,IP:127.0.0.1 >> extfile.cnf
-  echo extendedKeyUsage = serverAuth >> extfile.cnf
-  openssl x509 -req -days 365 -sha256 -in server.csr -CA ca.pem -CAkey ca-key.pem \
-    -passin pass:"$__PASSPHRASE__" \
-    -CAcreateserial -out server-cert.pem -extfile extfile.cnf
-
-  # Generating client key and CSR
-  openssl genrsa -out key.pem 4096
-  openssl req -subj '/CN=client' -new -key key.pem -out client.csr
-
-  # Signing client cert
-  echo extendedKeyUsage = clientAuth > extfile-client.cnf
-  openssl x509 -req -days 365 -sha256 -in client.csr -CA ca.pem -CAkey ca-key.pem \
-    -passin pass:"$__PASSPHRASE__" \
-    -CAcreateserial -out cert.pem -extfile extfile-client.cnf
-
-  # Reducing cert file permissions
-  rm -f client.csr server.csr extfile.cnf extfile-client.cnf
-  chmod -v 0400 ca-key.pem key.pem server-key.pem
-  chmod -v 0444 ca.pem server-cert.pem cert.pem
-  
-  # Enabling Docker daemon TLS
-  echo '{
-    "tls": true,
-    "tlscacert": "/etc/docker/ssl/ca.pem",
-    "tlscert": "/etc/docker/ssl/server-cert.pem",
-    "tlskey": "/etc/docker/ssl/server-key.pem",
-    "tlsverify": true
-  }' > /etc/docker/daemon.json
-
-  # Enabling Docker daemon TCP listener
-  mkdir -p /etc/systemd/system/docker.service.d
-  echo '[Service]
-ExecStart=
-ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock -H tcp://0.0.0.0:2376' \
-  > /etc/systemd/system/docker.service.d/tcp_secure.conf
-
-  # Restarting the Docker daemon
-  systemctl daemon-reload
   systemctl restart docker.service
 
   logout
-__SCRIPT__
-)
-ssh -qtt "root@$__IP__" <<__REMOTE__
-  $__VARS__
-  $__SCRIPT__
-__REMOTE__
+REMOTE
 
-echo "Getting client certs"
-mkdir -p ~/.docker
-rm -f ~/.docker/{ca,cert,key}.pem
-scp -q "root@$__IP__:/etc/docker/ssl/{ca,cert,key}.pem" ~/.docker
+echo "Creating remote Docker context"
+docker context rm remote || true
+docker context create remote --docker "host=ssh://$__SSH_ENDPOINT__"
 
 echo "$(tput bold)$(tput setaf 2)Done.$(tput sgr0)"
 
 echo $(tput setaf 3)
 
-echo "Running the following export command will configure the"
-echo "Docker client to connect to the remote daemon. You should"
-echo "also add it to your .bashrc and/or .zshrc file to make it"
-echo "the permanent configuration."
+echo "Running the following export command will set the Docker"
+echo "context to the remote daemon. You can also add the export"
+echo "to your .bashrc and/or .zshrc file to make it the default"
+echo "context."
 echo $(tput sgr0)$(tput bold)
 
-echo "  export DOCKER_TLS_VERIFY=1 DOCKER_HOST=tcp://$__IP__:2376"
+echo "  export DOCKER_CONTEXT=remote"
 
 echo $(tput sgr0)$(tput setaf 3)
 echo "Run the 'docker info' command to test."

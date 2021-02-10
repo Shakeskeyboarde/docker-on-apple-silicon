@@ -49,13 +49,11 @@ bash <(curl -sL https://raw.githubusercontent.com/Shakeskeyboarde/docker-remote/
 
 This script will...
 
-1. Ask you for the IP address of your Ubuntu host, and you might have to enter the root user's password once.
+1. Ask you for the SSH endpoint (eg. root@1.2.3.4) of your Ubuntu host, and you might have to enter the user's password once.
 2. Install your public key on the remote, so that you don't need to enter a password repeatedly.
 3. Install the Docker daemon on the remote.
-4. Generate self-signed TLS certs and configure the daemon for TLS secured TCP connections.
-5. Download the client TLS certs to your local `~/.docker` directory.
-6. Print out an export string which configures the Docker client to connect to the remote Docker daemon.
-   - Example: `export DOCKER_TLS_VERIFY=1 DOCKER_HOST=tcp://1.2.3.4:2376`
+4. Create a local Docker context called `remote`.
+   - You can add `export DOCKER_CONTEXT=remote` to your `.zshrc` and/or `.bashrc` file to make it the default context.
 
 You can run this script again at any time to upgrade or re-provision the Docker daemon, or to generate new certs.
 
