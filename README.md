@@ -1,10 +1,15 @@
-# Docker on Apple silicon
+# Docker on Apple (ARM64) using a remote daemon on Ubuntu (AMD64)
 
-This repository contains instructions and setup scripts for installing the Docker client (`docker` CLI) locally, the Docker daemon remotely (on Ubuntu), and configuring them to work together.
+This repository contains instructions and setup scripts for installing the Docker client locally (Apple), the Docker daemon remotely (Ubuntu), and configuring them to work together.
 
 **Q:** Why would you want to do this?
 
-**A:** Because support for Docker on Apple silicon is still progressing. And, even when Docker becomes Apple native, it will still only run Apple containers. Running the daemon remotely not only allows Docker to work now, but also means we can continue to use Linux containers. This is important, partly because there are a lot of them and not all will be ported to Apple, but mostly because we aren't deploying containers to Apple servers just yet (maybe someday).
+**A:** Because support for Docker on Apple silicon is still progressing. Even when Docker becomes Apple native, it will still only _run_ Arm64 containers on Apple silicon, and building will require emulation (buildx). Running the daemon remotely on an Amd64 Linux host allows me to continue running Amd64 images _right now_, and building does not require any additional configuration or emulation. I can run and build on the same platform the images will be deployed to.
+
+### Caveats
+
+- If running containers have listeners, they will be listening _on the daemon host's public IP._ This can be a good thing as long as you're aware of it. If you're not okay with public listeners, then I suggest you try setting up a VPN on your daemon host, and using iptables to lock down incoming connections to the VPS. But that's beyond the scope of this document.
+- Using volumes/mounts will target filesystem _of the daemon host_, not your local file system. If you need to share the daemon host's file system with your local machine, I recommend checking out SSHFS. But again, that's beyond the scope of this document.
 
 &nbsp;
 
