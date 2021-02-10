@@ -10,7 +10,7 @@ This repository contains instructions and setup scripts for installing the Docke
 
 # Let's begin.
 
-Follow these three (easy-ish) steps follow to get Docker working on your Apple silicon.
+Follow these three (easy-ish) steps to get Docker working on your Apple silicon.
 
 ## Step 1: Acquire an Ubuntu (20.04 LTS) instance
 
