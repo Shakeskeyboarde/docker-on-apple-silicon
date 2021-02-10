@@ -16,7 +16,7 @@ Follow these three (easy-ish) steps follow to get Docker working on your Apple s
 
 You will need to be able to SSH into it as the root user.
 
-I highly recommend creating a [Kamatera](https://console.kamatera.com) Type A (availability) VPS instance with at least 1GB of RAM and a 20GB disk. It's cheap (but not free), easy, and works great for running a Docker daemon.
+I highly recommend creating a [Kamatera](https://kamatera.com) Type A (availability) VPS instance with at least 1GB of RAM and 20GB of storage. It's cheap (but not free), easy, and works great for running a Docker daemon.
 
 ## Step 2: Install the Docker client
 
