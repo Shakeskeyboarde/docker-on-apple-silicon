@@ -9,7 +9,7 @@ This repository contains instructions and setup scripts for installing the Docke
 ### Caveats
 
 - If running containers have listeners, they will be listening _on the daemon host's public IP._ This can be a good thing as long as you're aware of it. If you're not okay with public listeners, then I suggest you try setting up a VPN on your daemon host, and using iptables to lock down incoming connections to the VPS. But that's beyond the scope of this document.
-- Using volumes/mounts will target filesystem _of the daemon host_, not your local file system. If you need to share the daemon host's file system with your local machine, I recommend checking out SSHFS. But again, that's beyond the scope of this document.
+- Using volumes/mounts will target the filesystem _of the daemon host_, not your local file system. If you need to share the daemon host's file system with your local machine, I recommend checking out SSHFS. But again, that's beyond the scope of this document.
 
 &nbsp;
 
