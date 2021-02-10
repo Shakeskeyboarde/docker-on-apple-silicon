@@ -142,7 +142,16 @@ scp -q "root@$__IP__:/etc/docker/ssl/{ca,cert,key}.pem" ~/.docker
 
 echo "$(tput bold)$(tput setaf 2)Done.$(tput sgr0)"
 
-echo
-echo "$(tput setaf 3)Put the following line in your .bashrc or .zshrc file.$(tput sgr0)"
-echo "$(tput bold)  export DOCKER_TLS_VERIFY=1 DOCKER_HOST=tcp://$__IP__:2376$(tput sgr0)"
-echo
+echo $(tput setaf 3)
+
+echo "Running the following export command will configure the"
+echo "Docker client to connect to the remote daemon. You should"
+echo "also add it to your .bashrc and/or .zshrc file to make it"
+echo "the permanent configuration."
+echo $(tput sgr0)$(tput bold)
+
+echo "  export DOCKER_TLS_VERIFY=1 DOCKER_HOST=tcp://$__IP__:2376"
+
+echo $(tput sgr0)$(tput setaf 3)
+echo "Run the 'docker info' command to test."
+echo $(tput sgr0)

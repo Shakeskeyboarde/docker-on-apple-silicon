@@ -29,6 +29,6 @@ fi
 
 echo "$(tput bold)$(tput setaf 2)Done.$(tput sgr0)"
 
-echo
-echo "$(tput setaf 3)Run 'docker --version' to verify the installation.$(tput sgr0)"
-echo
+echo $(tput setaf 3)
+echo "Run the'docker --version' command to test."
+echo $(tput sgr0)
