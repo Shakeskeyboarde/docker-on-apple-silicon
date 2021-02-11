@@ -35,7 +35,7 @@ I highly recommend creating a [Kamatera](https://kamatera.com) Type A (availabil
 Run the [setup-local-docker-client.sh](setup-local-docker-client.sh) script by pasting the following command in a terminal.
 
 ```bash
-bash <(curl -sL https://raw.githubusercontent.com/Shakeskeyboarde/docker-remote/main/setup-local-docker-client.sh)
+bash <(curl -sL https://raw.githubusercontent.com/Shakeskeyboarde/docker-remote-daemon/main/setup-local-docker-client.sh)
 ```
 
 This script will download a tarball of the latest stable Docker client, and extract the `docker` binary to your `/usr/local/bin` directory. This will _NOT_ install the Docker daemon locally. You can run this script again at anytime to upgrade or re-install the Docker client.
@@ -51,7 +51,7 @@ docker --version
 Run the [setup-remote-docker-daemon.ts](setup-remote-docker-daemon.sh) script by pasting the following command in a terminal (I'm sensing a pattern).
 
 ```bash
-bash <(curl -sL https://raw.githubusercontent.com/Shakeskeyboarde/docker-remote/main/setup-remote-docker-daemon.sh)
+bash <(curl -sL https://raw.githubusercontent.com/Shakeskeyboarde/docker-remote-daemon/main/setup-remote-docker-daemon.sh)
 ```
 
 This script will...
