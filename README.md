@@ -48,7 +48,7 @@ docker --version
 
 ## Step 3: Provision the Docker daemon
 
-Run the [setup-remote-docker-daemon.ts](setup-remote-docker-daemon.sh) script by pasting the following command in a terminal (I'm sensing a pattern).
+Run the [setup-remote-docker-daemon.sh](setup-remote-docker-daemon.sh) script by pasting the following command in a terminal (I'm sensing a pattern).
 
 ```bash
 bash <(curl -sL https://raw.githubusercontent.com/Shakeskeyboarde/docker-remote-daemon/main/setup-remote-docker-daemon.sh)
