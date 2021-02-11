@@ -4,7 +4,7 @@ This repository contains instructions and setup scripts for installing the Docke
 
 **Q:** Why?
 
-**A:** Getting a MacBook with an ARM64 processor means that my development machine is no longer the same arch as my deployment environments, which are all AMD64. My dev and deployment environments have frequently been running different operating systems, but still all on AMD64 processors. While the Docker tech preview can actually run and build linux/arm64 images with emulation (awesome!), I'd rather just side-step the whole issue and have my containers run un-emulated, on a daemon running remotely on a linux/amd64 VPS. It's a neat way to develop directly on my target platform. And it has some other side benefits...
+**A:** Getting a MacBook with an ARM64 processor means that my development machine is no longer the same arch as my deployment environments, which are all AMD64. My dev and deployment environments have frequently been running different operating systems, but still all on AMD64 processors. While the Docker tech preview can actually run and build linux/amd64 images with emulation (awesome!), I'd rather just side-step the whole issue and have my containers run un-emulated, on a daemon running remotely on a linux/amd64 VPS. It's a neat way to develop directly on my target platform. And it has some other side benefits...
 
 ### Pros
 
